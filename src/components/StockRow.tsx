@@ -9,7 +9,7 @@ import Animated, {
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { fontSizes } from '../theme/fontSizes';
-import type { Ticker } from '../api/api1.symbols.dataset copy';
+import type { Ticker } from '../api/api1.symbols.dataset';
 import { usePrice } from '../hooks/usePrice';
 
 type Props = {
@@ -39,7 +39,7 @@ function StockRow({ item, visible }: Props) {
   }));
 
   const isUp = price ? price.isPositive : true;
-  const priceText = price ? `$${price.price}` : '—';
+  const priceText = price ? `$${price.price}` : '';
 
   return (
     <View style={styles.row}>
@@ -81,15 +81,17 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
+    // backgroundColor: colors.card,
     borderRadius: 12,
     padding: spacing.md,
     minHeight: 60,
   },
   logo: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 45,
+    height: 45,
+    borderRadius: 45 / 2,
+    borderColor: colors.muted,
+    borderWidth: 2,
     marginRight: spacing.sm,
     backgroundColor: colors.card,
   },
