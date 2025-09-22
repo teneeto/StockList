@@ -8,7 +8,7 @@ type Props = {
   hasMore: boolean;
 };
 
-export default function ListEmptyComponent({ isLoading }: Props) {
+function ListEmptyComponent({ isLoading }: Props) {
   return (
     <View style={styles.emptyWrap}>
       {isLoading ? (
@@ -19,7 +19,8 @@ export default function ListEmptyComponent({ isLoading }: Props) {
     </View>
   );
 }
-React.memo(ListEmptyComponent);
+
+export default React.memo(ListEmptyComponent);
 
 const styles = StyleSheet.create({
   emptyWrap: { paddingVertical: spacing.lg, alignItems: 'center' },

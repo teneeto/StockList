@@ -1,8 +1,4 @@
-export type Price = {
-  symbol: string;
-  price: number;
-  isPositive: boolean;
-};
+import type { Price } from '../types/stock';
 
 export const API2_PRICES_DATASET: Price[] = [
   { symbol: 'NFLX', price: 50.0, isPositive: true },

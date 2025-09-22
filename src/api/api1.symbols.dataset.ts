@@ -1,10 +1,4 @@
-export type Ticker = {
-  id: string;
-  name: string;
-  symbol: string;
-  subtitle: string;
-  logo: string;
-};
+import type { Ticker } from '../types/stock';
 
 export const API1_SYMBOLS_DATASET: Ticker[] = [
   {

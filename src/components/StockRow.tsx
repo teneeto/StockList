@@ -6,11 +6,12 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { fontSizes } from '../theme/fontSizes';
-import type { Ticker } from '../api/api1.symbols.dataset';
 import { usePrice } from '../hooks/usePrice';
+import type { Ticker } from '../types/stock';
 
 type Props = {
   item: Ticker;
