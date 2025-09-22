@@ -8,4 +8,6 @@ export const colors = {
   badgeNegBg: '#3a0d0d',
   badgePos: '#30d158',
   badgeNeg: '#ff453a',
+  endText: '#7d7d7d',
+  dark: '#111',
 };
