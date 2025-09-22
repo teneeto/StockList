@@ -10,4 +10,5 @@ export const colors = {
   badgeNeg: '#ff453a',
   endText: '#7d7d7d',
   dark: '#111',
+  lightBlue: '#266AE3',
 };

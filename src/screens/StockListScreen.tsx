@@ -6,18 +6,18 @@ import {
   ListRenderItemInfo,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { usePaginatedStocks, PAGE_SIZE } from '../hooks/usePaginatedStocks';
+import { useTickers, PAGE_SIZE } from '../hooks/useTickers';
 import StockRow from '../components/StockRow';
 import Divider from '../components/Divider';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
-import { Stock } from '../types/stock';
 import ListHeader from '../components/ListHeader';
 import ListEmptyComponent from '../components/ListEmptyComponent';
 import ListFooter from '../components/ListFooter';
+import type { Ticker } from '../api/api1.symbols.dataset copy';
 
 export default function StockListScreen() {
-  const { items, loading, hasMore, loadMore } = usePaginatedStocks();
+  const { items, loading, hasMore, loadMore } = useTickers();
   const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set());
 
   const viewabilityConfig = useMemo(
@@ -28,16 +28,15 @@ export default function StockListScreen() {
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
       const next = new Set<string>();
-      viewableItems.forEach(visibleItem => {
-        if (visibleItem.isViewable && visibleItem.item?.id)
-          next.add(String(visibleItem.item.id));
+      viewableItems.forEach(v => {
+        if (v.isViewable && v.item?.id) next.add(String(v.item.id));
       });
       setVisibleIds(next);
     },
   ).current;
 
   const renderListItem = useCallback(
-    ({ item }: ListRenderItemInfo<Stock>) => (
+    ({ item }: ListRenderItemInfo<Ticker>) => (
       <StockRow item={item} visible={visibleIds.has(item.id)} />
     ),
     [visibleIds],

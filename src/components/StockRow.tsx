@@ -6,17 +6,20 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Stock } from '../types/stock';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { fontSizes } from '../theme/fontSizes';
+import type { Ticker } from '../api/api1.symbols.dataset copy';
+import { usePrice } from '../hooks/usePrice';
 
 type Props = {
-  item: Stock;
+  item: Ticker;
   visible: boolean;
 };
 
 function StockRow({ item, visible }: Props) {
+  const price = usePrice(item.symbol, visible);
+
   const tx = useSharedValue(-24);
   const op = useSharedValue(0);
   const hasPlayed = useRef(false);
@@ -35,6 +38,9 @@ function StockRow({ item, visible }: Props) {
     opacity: op.value,
   }));
 
+  const isUp = price ? price.isPositive : true;
+  const priceText = price ? `$${price.price}` : '—';
+
   return (
     <View style={styles.row}>
       <Image source={{ uri: item.logo }} style={styles.logo} />
@@ -42,36 +48,34 @@ function StockRow({ item, visible }: Props) {
         <Text style={styles.title}>
           {item.name} <Text style={styles.symbol}>{item.symbol}</Text>
         </Text>
-        <Text style={styles.subtitle}>• {item.subtitle}</Text>
+
+        <View style={styles.subtitleWrapper}>
+          <View style={styles.ribbon} />
+          <Text style={styles.subtitle}>{item.subtitle}</Text>
+        </View>
       </View>
+
       <Animated.View
         style={[
           styles.badge,
-          {
-            backgroundColor: item.isPositive
-              ? colors.badgePosBg
-              : colors.badgeNegBg,
-          },
+          { backgroundColor: isUp ? colors.badgePosBg : colors.badgeNegBg },
           badgeAnim,
         ]}
       >
         <Text
           style={[
             styles.badgeText,
-            { color: item.isPositive ? colors.badgePos : colors.badgeNeg },
+            { color: isUp ? colors.badgePos : colors.badgeNeg },
           ]}
         >
-          ${item.price}
+          {priceText}
         </Text>
       </Animated.View>
     </View>
   );
 }
 
-export default React.memo(
-  StockRow,
-  (a, b) => a.item.id === b.item.id && a.visible === b.visible,
-);
+export default React.memo(StockRow);
 
 const styles = StyleSheet.create({
   row: {
@@ -83,16 +87,29 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   logo: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginRight: spacing.sm,
-    backgroundColor: colors.card, // was colors.dark (may not exist)
+    backgroundColor: colors.card,
   },
   info: { flex: 1 },
   title: { color: colors.text, fontSize: fontSizes.md, fontWeight: '600' },
   symbol: { color: colors.muted, fontSize: fontSizes.md - 2 },
-  subtitle: { color: colors.muted, marginTop: 4 },
+  subtitle: { color: colors.muted },
+  subtitleWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.sm,
+  },
+  ribbon: {
+    height: 15,
+    width: 15,
+    borderRadius: 7.5,
+    borderWidth: 3,
+    borderColor: colors.lightBlue,
+    marginRight: spacing.sm,
+  },
   badge: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xs,
