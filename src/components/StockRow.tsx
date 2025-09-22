@@ -16,7 +16,7 @@ type Props = {
   visible: boolean;
 };
 
-export default function StockRow({ item, visible }: Props) {
+function StockRow({ item, visible }: Props) {
   const tx = useSharedValue(-24);
   const op = useSharedValue(0);
   const hasPlayed = useRef(false);
@@ -24,14 +24,9 @@ export default function StockRow({ item, visible }: Props) {
   useEffect(() => {
     if (visible && !hasPlayed.current) {
       hasPlayed.current = true;
-      tx.value = withTiming(0, {
-        duration: 350,
-        easing: Easing.out(Easing.cubic),
-      });
-      op.value = withTiming(1, {
-        duration: 350,
-        easing: Easing.out(Easing.cubic),
-      });
+      const cfg = { duration: 350, easing: Easing.out(Easing.cubic) };
+      tx.value = withTiming(0, cfg);
+      op.value = withTiming(1, cfg);
     }
   }, [visible]);
 
@@ -73,20 +68,26 @@ export default function StockRow({ item, visible }: Props) {
   );
 }
 
+export default React.memo(
+  StockRow,
+  (a, b) => a.item.id === b.item.id && a.visible === b.visible,
+);
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: colors.card,
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: spacing.md,
+    minHeight: 60,
   },
   logo: {
     width: 36,
     height: 36,
-    borderRadius: 36,
+    borderRadius: 18,
     marginRight: spacing.sm,
-    backgroundColor: '#111',
+    backgroundColor: colors.card, // was colors.dark (may not exist)
   },
   info: { flex: 1 },
   title: { color: colors.text, fontSize: fontSizes.md, fontWeight: '600' },
