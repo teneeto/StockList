@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
 import Animated, {
   Easing,
@@ -6,41 +6,35 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { fontSizes } from '../theme/fontSizes';
 import { usePrice } from '../hooks/usePrice';
 import type { Ticker } from '../types/stock';
 
-type Props = {
-  item: Ticker;
-  visible: boolean;
-};
+type Props = { item: Ticker; visible: boolean };
 
 function StockRow({ item, visible }: Props) {
   const price = usePrice(item.symbol, visible);
-
   const tx = useSharedValue(-24);
   const op = useSharedValue(0);
-  const hasPlayed = useRef(false);
+  const ready = !!price && visible;
 
   useEffect(() => {
-    if (visible && !hasPlayed.current) {
-      hasPlayed.current = true;
-      const cfg = { duration: 350, easing: Easing.out(Easing.cubic) };
+    const cfg = { duration: 350, easing: Easing.out(Easing.cubic) };
+    if (ready) {
       tx.value = withTiming(0, cfg);
       op.value = withTiming(1, cfg);
+    } else {
+      tx.value = -24;
+      op.value = 0;
     }
-  }, [visible]);
+  }, [ready, tx, op]);
 
   const badgeAnim = useAnimatedStyle(() => ({
     transform: [{ translateX: tx.value }],
     opacity: op.value,
   }));
-
-  const isUp = price ? price.isPositive : true;
-  const priceText = price ? `$${price.price}` : '';
 
   return (
     <View style={styles.row}>
@@ -56,22 +50,28 @@ function StockRow({ item, visible }: Props) {
         </View>
       </View>
 
-      <Animated.View
-        style={[
-          styles.badge,
-          { backgroundColor: isUp ? colors.badgePosBg : colors.badgeNegBg },
-          badgeAnim,
-        ]}
-      >
-        <Text
+      {price ? (
+        <Animated.View
           style={[
-            styles.badgeText,
-            { color: isUp ? colors.badgePos : colors.badgeNeg },
+            styles.badge,
+            {
+              backgroundColor: price.isPositive
+                ? colors.badgePosBg
+                : colors.badgeNegBg,
+            },
+            badgeAnim,
           ]}
         >
-          {priceText}
-        </Text>
-      </Animated.View>
+          <Text
+            style={[
+              styles.badgeText,
+              { color: price.isPositive ? colors.badgePos : colors.badgeNeg },
+            ]}
+          >
+            ${price.price}
+          </Text>
+        </Animated.View>
+      ) : null}
     </View>
   );
 }
@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: colors.card,
     borderRadius: 12,
     padding: spacing.md,
     minHeight: 60,
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 45,
     height: 45,
-    borderRadius: 45 / 2,
+    borderRadius: 22.5,
     borderColor: colors.muted,
     borderWidth: 2,
     marginRight: spacing.sm,

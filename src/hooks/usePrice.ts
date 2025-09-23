@@ -8,7 +8,7 @@ export function usePrice(symbol: string, visible: boolean) {
     enabled: visible,
     refetchInterval: visible ? 1500 : false,
     refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     staleTime: 500,
     gcTime: 5 * 60_000,
   });

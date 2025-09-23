@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { listTickers } from '../api/mockApi';
 import { Ticker } from '../types/stock';
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 7;
 
 export function useTickers() {
   const query = useInfiniteQuery({
