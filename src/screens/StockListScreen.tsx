@@ -14,9 +14,9 @@ import { spacing } from '../theme/spacing';
 import ListHeader from '../components/ListHeader';
 import ListEmptyComponent from '../components/ListEmptyComponent';
 import ListFooter from '../components/ListFooter';
-import type { Ticker } from '../api/api1.symbols.dataset copy';
+import type { Ticker } from '../types/stock';
 
-export default function StockListScreen() {
+function StockListScreen() {
   const { items, loading, hasMore, loadMore } = useTickers();
   const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set());
 
@@ -28,8 +28,9 @@ export default function StockListScreen() {
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
       const next = new Set<string>();
-      viewableItems.forEach(v => {
-        if (v.isViewable && v.item?.id) next.add(String(v.item.id));
+      viewableItems.forEach(viewableItem => {
+        if (viewableItem.isViewable && viewableItem.item?.id)
+          next.add(String(viewableItem.item.id));
       });
       setVisibleIds(next);
     },
@@ -76,6 +77,7 @@ export default function StockListScreen() {
     </SafeAreaView>
   );
 }
+export default StockListScreen;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.bg },
