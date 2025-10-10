@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Image, Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -11,6 +11,7 @@ import { spacing } from '../theme/spacing';
 import { fontSizes } from '../theme/fontSizes';
 import { usePrice } from '../hooks/usePrice';
 import type { Ticker } from '../types/stock';
+import PreviewImage from './PreviewImage';
 
 type Props = { item: Ticker; visible: boolean };
 
@@ -38,7 +39,7 @@ function StockRow({ item, visible }: Props) {
 
   return (
     <View style={styles.row}>
-      <Image source={{ uri: item.logo }} style={styles.logo} />
+      <PreviewImage uri={item.logo} />
       <View style={styles.info}>
         <Text style={styles.title}>
           {item.name} <Text style={styles.symbol}>{item.symbol}</Text>
